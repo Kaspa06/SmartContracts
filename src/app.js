@@ -2,7 +2,9 @@ let web3;
 let rouletteContract;
 let userAccount;
 let selectedBet = null;
-let totalSpinDistance = 0;
+let totalSpinDistance = 100;
+const casinoAddress = "0xe01569b111125127d57cbE782da08844C6456B49"; // Casino address
+const contractAddress = "0x340E36089d1DD8c87E83e4e6FE4F9760F5d8d6bF"; // Roulette contract address
 
 const abi = [
     {
@@ -139,8 +141,6 @@ const abi = [
     },
 ];
 
-const contractAddress = "0x340E36089d1DD8c87E83e4e6FE4F9760F5d8d6bF";
-
 async function init() {
     if (typeof window.ethereum !== "undefined") {
         web3 = new Web3(window.ethereum);
@@ -161,21 +161,6 @@ async function init() {
     }
 }
 
-async function updateCasinoBalance() {
-    try {
-        const ownerAddress = "0xe01569b111125127d57cbE782da08844C6456B49"; // Casino address
-        const balance = await web3.eth.getBalance(ownerAddress);
-        document.getElementById(
-            "contract-balance"
-        ).textContent = `Casino Balance: ${web3.utils.fromWei(
-            balance,
-            "ether"
-        )} ETH`;
-    } catch (error) {
-        console.error("Error fetching casino balance:", error);
-    }
-}
-
 async function placeBet() {
     const betAmount = document.getElementById("bet-amount").value;
     const betColor =
@@ -192,8 +177,6 @@ async function placeBet() {
     }
 
     try {
-        const casinoAddress = "0xe01569b111125127d57cbE782da08844C6456B49"; // Casino address
-
         // Send the bet amount to the casino wallet
         const transaction = await web3.eth.sendTransaction({
             from: userAccount,
@@ -203,7 +186,6 @@ async function placeBet() {
 
         console.log("Bet sent to casino:", transaction);
 
-        // Update balances after the transaction is completed
         await updateUserInfo();
         await updateCasinoBalance();
 
@@ -218,7 +200,7 @@ async function placeBet() {
                     prize = betAmount * 2; // Red/Black payout
                 }
 
-                alert(`Congratulations! You won ${prize} ETH!`);
+                // alert(`Congratulations! You won ${prize} ETH!`);
 
                 // Send the prize back to the user
                 await web3.eth.sendTransaction({
@@ -231,7 +213,7 @@ async function placeBet() {
                 await updateUserInfo();
                 await updateCasinoBalance();
             } else {
-                alert("Better luck next time!");
+                // alert("Better luck next time!");
             }
         });
     } catch (error) {
@@ -246,12 +228,62 @@ function calculateColor(number) {
     return 2; // Black
 }
 
+function storeResult(winningNumber, winningColor) {
+    const colorNames = ["Green", "Red", "Black"];
+    const colorClass = ["green", "red", "black"];
+
+    const newResult = {
+        number: winningNumber,
+        color: colorNames[winningColor],
+        className: colorClass[winningColor],
+    };
+
+    let results = JSON.parse(localStorage.getItem("rouletteResults")) || [];
+
+    results.unshift(newResult);
+
+    if (results.length > 20) {
+        results = results.slice(0, 20);
+    }
+
+    localStorage.setItem("rouletteResults", JSON.stringify(results));
+    displayResults(results);
+}
+
+function displayResults() {
+    const resultsContainer = document.getElementById("results-container");
+    resultsContainer.innerHTML = "";
+
+    // Retrieve results from localStorage
+    const results = JSON.parse(localStorage.getItem("rouletteResults")) || [];
+
+    results.forEach((result) => {
+        const resultDiv = document.createElement("div");
+        resultDiv.className = `result-box ${result.className}`;
+        resultDiv.textContent = result.number;
+        resultsContainer.appendChild(resultDiv);
+    });
+}
+
+// Call this function on page load to display stored results
+document.addEventListener("DOMContentLoaded", displayResults);
+
+// Call this function to update results after a spin
+function updateResults(winningNumber, winningColor) {
+    storeResult(winningNumber, winningColor);
+}
+
 function spinWheel() {
     return new Promise((resolve) => {
         const spinner = document.getElementById("spinner");
         const segments = Array.from(document.querySelectorAll(".segment"));
-        const winningNumber = Math.floor(Math.random() * 15); // Random number between 0-14
+        const betAmount = parseFloat(
+            document.getElementById("bet-amount").value
+        );
+        const betColor =
+            selectedBet === "red" ? 1 : selectedBet === "black" ? 2 : 0; // Map colors to numbers: Green=0, Red=1, Black=2
 
+        const winningNumber = Math.floor(Math.random() * 15); // Random number between 0-14
         const segmentWidth = 150; // Width of each segment
         const randomOffset = Math.floor(Math.random() * segmentWidth);
         const spinDistance =
@@ -288,16 +320,23 @@ function spinWheel() {
             );
             winningSegment.classList.add("highlight");
 
-            // Update the UI with the winning number and resolve the promise
-            document.getElementById(
-                "result"
-            ).textContent = `Result: ${winningNumber}`;
+            // Determine win or loss
+            let resultMessage;
+            if (betColor === winningColor) {
+                const prize = betColor === 0 ? betAmount * 14 : betAmount * 2; // Green pays 14x, Red/Black pay 2x
+                resultMessage = `YOU WON ${prize.toFixed(2)} ETH!`;
+            } else {
+                resultMessage = `You lost ${betAmount.toFixed(2)} ETH.`;
+            }
+
+            document.getElementById("result").textContent = resultMessage;
+            updateResults(winningNumber, winningColor);
+
             resolve({ winningNumber, winningColor });
-        }, 5000); // Match spin animation duration
+        }, 5000);
     });
 }
 
-// Ensure previous highlights are removed
 function resetSpinnerHighlights() {
     const segments = document.querySelectorAll(".segment");
     segments.forEach((segment) => segment.classList.remove("highlight"));
@@ -358,12 +397,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     spinButton.addEventListener("click", async () => {
         await placeBet();
+        document.getElementById("result").textContent = "";
     });
 });
-
-window.addEventListener("load", init);
-
-// Additional buttons
 
 function setupBetAdjustments() {
     const betAmountInput = document.getElementById("bet-amount");
@@ -386,7 +422,7 @@ function setupBetAdjustments() {
                 const maxBet = parseFloat(
                     web3.utils.fromWei(balance, "ether")
                 ).toFixed(2);
-                betAmountInput.value = maxBet; // Set the max balance as the bet amount
+                betAmountInput.value = maxBet;
             } else {
                 betAmountInput.value = (
                     currentBet + parseFloat(adjust)
@@ -408,7 +444,7 @@ async function updateUserInfo() {
         const balance = await web3.eth.getBalance(userAccount);
         const formattedBalance = parseFloat(
             web3.utils.fromWei(balance, "ether")
-        ).toFixed(2); // Round to 2 decimal places
+        ).toFixed(2);
 
         document.getElementById(
             "user-info"
@@ -423,11 +459,10 @@ async function updateUserInfo() {
 
 async function updateCasinoBalance() {
     try {
-        const ownerAddress = "0xe01569b111125127d57cbE782da08844C6456B49"; // Casino address
-        const balance = await web3.eth.getBalance(ownerAddress);
+        const balance = await web3.eth.getBalance(casinoAddress);
         const formattedBalance = parseFloat(
             web3.utils.fromWei(balance, "ether")
-        ).toFixed(2); // Round to 2 decimal places
+        ).toFixed(2);
         document.getElementById(
             "contract-balance"
         ).textContent = `Casino Balance: ${formattedBalance} ETH`;
@@ -436,13 +471,8 @@ async function updateCasinoBalance() {
     }
 }
 
-async function updateBalancesAfterSpin() {
-    await updateUserInfo();
-    await updateCasinoBalance();
-}
-
 window.addEventListener("load", async () => {
-    await init(); // Initialize web3 and contract
+    await init();
     updateUserInfo();
     setupBetAdjustments();
 });
