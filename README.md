@@ -23,9 +23,9 @@
 4. Ruletės mechanizmas:
 
 - Atsitiktinai sugeneruojamas laimintis skaičius (0–14) ir pagal tai nustatoma spalva:
--- 0 – žalia.
--- 1–7 – raudona.
--- 8–14 – juoda.
+    - 0 – žalia.
+    - 1–7 – raudona.
+    - 8–14 – juoda.
 - Jei žaidėjo statymas atitinka laimėjusią spalvą, jam išmokama atitinkama suma pagal pasirinktą spalvą ir statymo koeficientą.
 5. Laimėjimų išmokėjimas:
 
