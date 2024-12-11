@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Smart-Contract Roulette</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <div class="top-bar">
+            <p id="user-info">User: Connecting...</p>
+            <p id="user-balance">User Balance: 0 ETH</p>
+        </div>
+        <h1>Ethereum Roulette</h1>
+
+        <!-- Betting Section -->
+        <div class="betting-section">
+            <div class="betting-controls">
+                <input
+                    type="number"
+                    id="bet-amount"
+                    min="0.01"
+                    step="0.01"
+                    placeholder="Enter bet amount..."
+                />
+                <div class="bet-buttons">
+                    <button data-adjust="clear">CLEAR</button>
+                    <button data-adjust="0.01">+0.01</button>
+                    <button data-adjust="0.1">+0.1</button>
+                    <button data-adjust="1">+1</button>
+                    <button data-adjust="10">+10</button>
+                    <button data-adjust="100">+100</button>
+                    <button data-adjust="half">1/2</button>
+                    <button data-adjust="double">X2</button>
+                    <button data-adjust="max">MAX</button>
+                </div>
+            </div>
+            <div>
+                <button id="bet-red" class="bet-button red">Bet on Red</button>
+                <button id="bet-green" class="bet-button green">
+                    Bet on Green
+                </button>
+                <button id="bet-black" class="bet-button black">
+                    Bet on Black
+                </button>
+            </div>
+            <p id="selected-bet">
+                Selected Bet: <span id="bet-selection">None</span>
+            </p>
+        </div>
+
+        <!-- Roulette Spinner -->
+        <div class="roulette-container">
+            <div class="selector"></div>
+            <div id="spinner" class="spinner"></div>
+        </div>
+
+        <button id="spin-button" disabled>Confirm Bet & Spin the Wheel</button>
+        <div id="result"></div>
+        <div id="contract-balance"></div>
+
+        <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
+        <script src="app.js"></script>
+    </body>
+</html>
