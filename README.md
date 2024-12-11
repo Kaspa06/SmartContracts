@@ -30,6 +30,9 @@
 5. Laimėjimų išmokėjimas:
 
 - Laimėjusiems žaidėjams ETH automatiškai pervedamas atgal į jų paskyrą.
+  ![image](https://github.com/user-attachments/assets/3f32c898-b59c-4136-8f28-10c7b8354c25) ![image](https://github.com/user-attachments/assets/ebe398f6-97d9-4c51-98d8-11f8f6fd1e77)
+
+
 6. Istorija ir analizė:
 
 - Statymų ir rezultatų duomenys saugomi lokaliai (naršyklėje), kad būtų galima peržiūrėti paskutinius 20 rezultatų
