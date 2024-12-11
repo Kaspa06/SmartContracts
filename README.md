@@ -136,6 +136,9 @@ truffle migrate --network development
 ### 3. Front-End paleidimas
 
 Užtikrinkite, kad MetaMask būtų aktyvuotas ir prisijungęs prie Ganache tinklo.
+![image](https://github.com/user-attachments/assets/f4d72522-a441-4117-b102-bbdd5f67854d)
+![image](https://github.com/user-attachments/assets/9b5deae7-1dee-41f3-9a81-dff369e2a67d)
+
 
 ```bash
 npx serve src/
