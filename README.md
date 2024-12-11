@@ -5,6 +5,35 @@
 - Pagrindinis šios užduoties tikslas yra sukurti išmaniąją sutartį (angl. smart contract), kuri įgyvendintų tam tikrą verslo logiką ir galėtų užtikrinti jos "saugų" ir "patikimą" funkcionavimą decentralizuotame viešąjame tinkle. Išmaniosios sutarties valdymui ir verslo proceso dalyvių tarpusavio sąveikai palengvinti bus kuriama decentralizuota aplikacija su Front-End .
 ---
 
+## Verslo modelis
+
+1. Šalys:
+
+- Žaidėjas: Asmuo, kuris dalyvauja žaidime, atlikdamas statymus ant tam tikros spalvos (žalia, raudona, juoda).
+- Kazino: Sistema arba sutarties savininkas, kuris valdo statymus, kaupia mokesčius ir išmoka laimėjimus.
+2. Statymai:
+
+Žaidėjas gali pasirinkti vieną iš trijų spalvų:
+- Žalia (0) – reta spalva, kuri turi didžiausią išmoką (14x statymo suma).
+- Raudona (1) arba Juoda (2) – dažnesnės spalvos, turinčios mažesnę išmoką (2x statymo suma).
+- Žaidėjas nustato statymo sumą ETH ir siunčia ją į išmaniąją sutartį.
+3. Komisinis mokestis:
+
+- Kiekvienas statymas apmokestinamas tam tikru procentu (šiuo atveju 2%), kuris yra pervedamas kazino savininkui.
+4. Ruletės mechanizmas:
+
+- Atsitiktinai sugeneruojamas laimintis skaičius (0–14) ir pagal tai nustatoma spalva:
+-- 0 – žalia.
+-- 1–7 – raudona.
+-- 8–14 – juoda.
+- Jei žaidėjo statymas atitinka laimėjusią spalvą, jam išmokama atitinkama suma pagal pasirinktą spalvą ir statymo koeficientą.
+5. Laimėjimų išmokėjimas:
+
+- Laimėjusiems žaidėjams ETH automatiškai pervedamas atgal į jų paskyrą.
+6. Istorija ir analizė:
+
+- Statymų ir rezultatų duomenys saugomi lokaliai (naršyklėje), kad būtų galima peržiūrėti paskutinius 20 rezultatų
+
 ## Projekto struktūra
 
 ### Failų struktūra
