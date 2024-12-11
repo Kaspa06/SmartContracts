@@ -2,11 +2,7 @@
 
 ## Projekto tikslas
 
-Sukurti decentralizuotą „Ruletės“ aplikaciją, kuri apima:
-
--   Išmaniąją sutartį, įgyvendinančią verslo logiką Ethereum tinkle, parašytą Solidyti programavimo kalba.
--   Decentralizuotą aplikaciją su Front-End sąsaja, leidžiančią vartotojams sąveikauti su sutartimi per MetaMask bei atlikti statymus.
-
+Pagrindinis šios užduoties tikslas yra sukurti išmaniąją sutartį (angl. smart contract), kuri įgyvendintų tam tikrą verslo logiką ir galėtų užtikrinti jos "saugų" ir "patikimą" funkcionavimą decentralizuotame viešąjame tinkle. Išmaniosios sutarties valdymui ir verslo proceso dalyvių tarpusavio sąveikai palengvinti bus kuriama decentralizuota aplikacija su Front-End .
 ---
 
 ## Projekto struktūra
